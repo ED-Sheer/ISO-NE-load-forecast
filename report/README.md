@@ -26,6 +26,7 @@
 - rolling 特征: rolling_mean_24, rolling_mean_168 (shift 1)
 - 防泄露原则: 所有 lag/rolling 都 shift，t 时刻只看 t 之前
 - 图: 09_feature_importance.png
+- 阶段 2 引入了 Open-Meteo 的逐小时气温，构造 HDD/CDD、温度滞后项，并引入美国法定节假日标记，使滚动回测 MAPE 从 5.19% 降至 3.55%。
 
 ## 4. 模型
 - LightGBM, 500 棵树, lr=0.05, num_leaves=31
@@ -40,11 +41,13 @@
 ## 6. 结果
 
 ### 6.1 主结果表 (滚动回测, mean)
-| 方法 | MAPE | MAE | RMSE | MASE |
-|---|---|---|---|---|
-| naive (lag=24) | 5.95% | 812.7 | 958.2 | 0.906 |
-| LightGBM time-only | 13.32% | 1860.9 | 2030.7 | 2.086 |
-| **LightGBM full** | **5.19%** | **722.3** | **859.4** | **0.808** |
+| 方法                                    | MAPE      | MAE | RMSE | MASE |
+|---------------------------------------|-----------|---|---|---|
+| naive (lag=24)                        | 5.95%     | 812.7 | 958.2 | 0.906 |
+| LightGBM time-only                    | 13.32%    | 1860.9 | 2030.7 | 2.086 |
+| **LightGBM full**                     | **5.19%** | **722.3** | **859.4** | **0.808** |
+| **LightGBM + Weather (D8)**           | **3.62%** |           |           |           |
+| **LightGBM + Weather + Holiday (D8)** | **3.55%** |           |           |           |
 
 图: 05_mape_comparison.png
 

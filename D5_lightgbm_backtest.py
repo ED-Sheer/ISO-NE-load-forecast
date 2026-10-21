@@ -40,7 +40,7 @@ def make_model():
 
 
 def backtest(df, feature_set, target='RT_Demand',
-             train_hours=24*180, horizon=24, step=24):
+             train_hours=24*180, horizon=24, step=24, weather_df=None, holiday_df=None):
     """
     滚动回测。每次：
       - train_df: 滑动的 180 天窗口
@@ -53,9 +53,10 @@ def backtest(df, feature_set, target='RT_Demand',
         train_df = df.loc[train_idx]
         test_df = df.loc[test_idx]
 
-        feat_train = build_features(train_df, feature_set=feature_set)
-        feat_test = build_features(pd.concat([train_df, test_df]),
-                                    feature_set=feature_set)
+        feat_train = build_features(train_df, feature_set=feature_set,
+                                    weather_df=weather_df, holiday_df=holiday_df)
+        feat_test = build_features(pd.concat([train_df, test_df]), feature_set=feature_set,
+                                   weather_df=weather_df, holiday_df=holiday_df)
         feat_test = feat_test.loc[test_idx]
 
         # 对齐 dropna

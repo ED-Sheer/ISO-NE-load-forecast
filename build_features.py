@@ -6,7 +6,7 @@ import pandas as pd
 CATEGORICAL_FEATURES = ['hour', 'dayofweek']
 
 
-def build_features(df, feature_set = 'time_only'):
+def build_features(df, feature_set = 'time_only', weather_df=None, holiday_df=None):
     """
     构造特征。D3 阶段只加时间特征。
 
@@ -40,5 +40,19 @@ def build_features(df, feature_set = 'time_only'):
         # rolling：先算 rolling，再 shift(1)，保证不含当前点
         feat['rolling_mean_24'] = s.rolling(24).mean().shift(1)
         feat['rolling_mean_168'] = s.rolling(168).mean().shift(1)
-    
+
+    if feature_set in ('time_lag_rolling', 'time_lag_rolling_weather_holiday'):
+        s = df['RT_Demand']
+        feat['lag_24'] = s.shift(24)
+        feat['lag_168'] = s.shift(168)
+        feat['rolling_mean_24'] = s.rolling(24).mean().shift(1)
+        feat['rolling_mean_168'] = s.rolling(168).mean().shift(1)
+
+        # 加入新特征
+        if feature_set == 'time_lag_rolling_weather_holiday':
+            if weather_df is not None:
+                feat = feat.join(weather_df, how='left')
+            if holiday_df is not None:
+                feat = feat.join(holiday_df, how='left')
+
     return feat

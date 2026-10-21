@@ -1,0 +1,21 @@
+# 数据
+.data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+report.py
+test.py
+
+# IDE
+.idea/
+.vscode/
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# Open-Meteo 请求缓存
+.cache/
+.cache.sqlite
