@@ -23,16 +23,16 @@ if __name__ == '__main__':
     res_w = backtest(df, feature_set='time_lag_rolling_weather_holiday',
                      weather_df=weather_df, holiday_df=None)
     print(f"MAPE: {res_w['MAPE'].mean():.4f}%")
+    print(res_w.mean())
 
     print("\n>>> 3. 跑 加天气 + 节假日 ...")
     res_wh = backtest(df, feature_set='time_lag_rolling_weather_holiday',
                       weather_df=weather_df, holiday_df=holiday_df)
     print(f"MAPE: {res_wh['MAPE'].mean():.4f}%")
+    print(res_wh.mean())
 
     # 提取 7-8 月进行对比
     for name, r in [('Baseline', res_base), ('Weather', res_w), ('Weather+Holiday', res_wh)]:
         r['month'] = pd.to_datetime(r['test_start']).dt.month
         summer_mape = r[r['month'].isin([7, 8])]['MAPE'].mean()
         print(f"{name:>20} 夏季(7-8月) MAPE: {summer_mape:.4f}%")
-
-    print(res_wh.mean())
